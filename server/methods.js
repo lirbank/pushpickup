@@ -54,7 +54,10 @@ Meteor.methods({
       'startsAt': {$lt: new Date()},
       'location.geoJSON': {
         $near: {$geometry: location},
-        $maxDistance: 100000 // 100,000 m => 62 miles
+        // MongoDB 2.4 'geo near' accepts multiple values, MongoDB 2.6 accepts
+        // only one, eg: "Exception while invoking method 'nearest-past-games' MongoError: Can't canonicalize query: BadValue geo near accepts just one argument when querying for a GeoJSON point. Extra field found: $maxDistance: 100000"
+        // Fix, removing $maxDistance field
+        // $maxDistance: 100000 // 100,000 m => 62 miles
       }}, {limit: 15}).fetch();
   },
   "sendVerificationEmail": function () {
